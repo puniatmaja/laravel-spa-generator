@@ -1,12 +1,30 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+
+
+
+# Laravel SPA Generator
+Laravel Vue SPA generator
+
 
 <p align="center"><img src="https://ik.imagekit.io/7k7wjq0kndrg/Screenshot_2021-12-03_185731_vsaR4tN4sv3.png?updatedAt=1638529160914" width="100%"></p>
 
 
-# laravel-spa-generator
-Laravel Vue SPA generator
+## Technology
 
-# Installation
+- Laravel (8.54)
+- Vue.js (3.0.5)
+- Tailwindcss (2.1.2)
+
+## Feature
+
+- Generate CRUD (create data, update data, delete data, read data) automatically
+- Standard component 
+    - input
+    - table
+    - button
+    - notification
+- 
+
+## Installation
 
 Install package laravel
 
@@ -19,8 +37,8 @@ Make env file
 Set DB Connection
  
     DB_DATABASE=YourDB
-    DB_USERNAME=YourSQLUsername
-    DB_PASSWORD=YourSQLPassword
+    DB_USERNAME=root
+    DB_PASSWORD=
 
 Generate APP_KEY
 
@@ -39,7 +57,7 @@ Instal npm package :
 
     npm install
 
-# Runing
+## Running
 
 Runing server API
 
@@ -49,9 +67,9 @@ Runing vue front
 
     npm run hot
 
-# Login 
+## Access 
 
-Access :
+Url :
     
     http://localhost:8000
 
