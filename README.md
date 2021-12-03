@@ -16,6 +16,20 @@ Install package laravel
 
     composer install
 
+Make env file
+
+    cp .env.example .env
+    
+Set DB Connection
+ 
+    DB_DATABASE=YourDB
+    DB_USERNAME=YourSQLUsername
+    DB_PASSWORD=YourSQLPassword
+
+Generate APP_KEY
+
+    php artisan key:generate
+
 Migrate database
 
     php artisan migrate
@@ -25,7 +39,7 @@ Create account login to dashboard:
     php artisan db:seed
 
 
-instal npm package : 
+Instal npm package : 
 
     npm install
 
@@ -38,6 +52,20 @@ Runing server API
 Runing vue front
 
     npm run hot
+
+# Login 
+
+Access :
+    
+    http://localhost:8000
+
+Username :
+
+    admin@gmail.com
+
+Password :
+
+    12345678
 
 ## License
 
