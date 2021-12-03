@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class [class_name] extends Model
+{
+	use SoftDeletes;
+	
+    protected $table = '[table_name]';
+	protected $fillable = [
+			[table_field]
+	];
+	protected $dates = ['deleted_at'];
+}

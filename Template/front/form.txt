@@ -1,0 +1,177 @@
+<template>
+    <Head title="[info_name]" />
+    
+    <BreezeAuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{cardTitle}}
+            </h2>
+        </template>
+    
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white border-b border-gray-200">
+                        <form @submit.prevent="submit">
+                            <div class="grid grid-cols-8 gap-6 mb-5">
+                                [form_field]
+                                <div class="col-span-8">
+                                    <button type="submit" class="btn-primary font-bold relative mr-1 float-right text-center" :disabled="isLoading">
+                                        <div class="inline-flex pl-4">
+                                            {{buttonSubmit}}
+                                            <Loading v-if="isLoading" />
+                                            <ClipboardCheckIcon v-else class="ml-3 h-5 w-5 text-white" />
+                                        </div>
+                                    </button>
+                                    <Link :href="route('[url_name]')" class="btn-secondary font-bold relative mr-1 float-right w-1/12 text-center">Cancel</Link>
+                                </div>
+    
+                            </div>
+                        </form>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </BreezeAuthenticatedLayout>
+    </template>
+    
+    <script>
+    import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
+    import {
+        Head
+    } from '@inertiajs/inertia-vue3';
+    
+    import {
+        mapActions,
+        mapState,
+        mapMutations
+    } from 'vuex'
+    
+    import {
+        
+        ClipboardCheckIcon
+    } from '@heroicons/vue/outline'
+    import {
+        Dialog,
+        DialogOverlay,
+        DialogTitle,
+        TransitionChild,
+        TransitionRoot,
+        Switch,
+    } from '@headlessui/vue'
+    import { Link } from '@inertiajs/inertia-vue3';
+    import {Inertia} from "@inertiajs/inertia";
+    import Loading from '@/Components/Loading.vue'
+    
+    export default {
+        name: "[main_name]Form",
+        components: {
+            BreezeAuthenticatedLayout,
+            Head,
+            ClipboardCheckIcon,
+            Dialog,
+            DialogOverlay,
+            DialogTitle,
+            TransitionChild,
+            TransitionRoot,
+            Switch,
+            Link,
+            Loading,
+        },
+        props: {
+            id: {
+                default: null
+            }
+        },
+        data() {
+            return {
+                isLoading: false,
+                form: this.clear[main_name](),
+                buttonSubmit: 'Create'
+            }
+        },
+        computed: {
+            ...mapState('[state_name]', {
+                [state_name]s: state => state.[state_name]s,
+                [state_name]: state => state.[state_name],
+                notif: state => state.notif,
+                total: state => state.total,
+                [state_name]_errors: state => state.[state_name]_errors,
+            }),
+            cardTitle() {
+                if (this.id) {
+                    return 'Update [info_name]'
+                } else {
+                    return 'Create [info_name]'
+                }
+            },
+            formCardTitle() {
+                if (this.id) {
+                    return 'Edit [info_name]'
+                } else {
+                    return 'New [info_name]'
+                }
+            },
+        },
+        created() {
+            if (this.id) {
+                this.buttonSubmit = 'Update'
+            }
+            this._get[main_name]()
+        },
+        methods: {
+            ...mapActions('[state_name]', ['get[main_name]s', 'get[main_name]', 'add[main_name]', 'update[main_name]', 'delete[main_name]', 'deletes[main_name]']),
+            ...mapMutations('[state_name]', ['clear[main_name]']),
+            trashModal(id) {
+                this.isModalActive = true
+                this.deleteId = id
+            },
+            _add[main_name](payload) {
+                this.add[main_name](payload)
+                    .then(() => {
+                        this.isLoading = false
+                        if ([table_field_for_condition]) {
+                            Inertia.get(route('[url_name]'))
+                        }
+                    })
+            },
+            _get[main_name]() {
+                if (this.id) {
+                    this.get[main_name](this.id)
+                }
+            },
+            _update[main_name](payload) {
+                this.update[main_name](payload)
+                    .then(() => {
+                        this.isLoading = false
+                        if ([table_field_for_condition]) {
+                            Inertia.get(route('[url_name]'))
+                        }
+                    })
+            },
+            submit() {
+                this.isLoading = true
+                if (this.id) {
+                    this._update[main_name](this.[state_name])
+                } else {
+                    this._add[main_name](this.[state_name])
+                }
+            }
+        },
+        watch: {
+            notif() {
+                this.$notify({
+                        group: "notif",
+                        type: this.notif.type,
+                        title: this.notif.title,
+                        text: this.notif.message
+                    },
+                    3000
+                );
+            },
+        }
+    }
+    </script>
+    

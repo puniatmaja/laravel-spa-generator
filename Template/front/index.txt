@@ -1,0 +1,344 @@
+<template>
+<Head title="[info_name]" />
+
+<BreezeAuthenticatedLayout>
+    <template #header>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            [info_name]
+        </h2>
+    </template>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="flex pb-5">
+                <div class="w-1/3">
+                    <form @submit.prevent="currentPage=1;_get[main_name]s()">
+                        <div class="relative">
+                            <i class="absolute top-4 right-4">
+                                <SearchIcon class="h-4 w-4" />
+                            </i>
+                            <input class="input h-12" type="text" placeholder="Search..." v-model="search">
+                        </div>
+                    </form>
+                </div>
+                <div class="flex-grow">
+                </div>
+                <div class="flex">
+
+                    <Link :href="route('[main_name]Form')" class="btn-primary font-bold relative">
+                        <div class="inline-flex">
+                            <span class="mt-0.5">
+                                Add New [info_name]
+                            </span>
+                            <PlusIcon class="bg-purple-400 rounded-2xl p-1 w-6 ml-2" />
+                        </div>
+                    </Link>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="flex flex-col">
+                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+
+                                <!-- Table -->
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                No
+                                            </th>
+                                            <th v-for="a in columns" :key="'field-'+a.key" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                {{a.field}}
+                                            </th>
+                                            <th scope="col" class="relative px-6 py-3">
+                                                <span class="sr-only">Edit</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200 relative">
+                                        <tr v-for="(row,index) in [state_name]s" :key="row.id">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{(perPage * (currentPage-1))+(index+1)}}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap" v-for="a in columns" :key="'row-'+a.key">
+                                                <div class="text-sm text-gray-900">
+                                                    {{row[a.key]}}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <Link :href="route('[main_name]FormEdit',{id:row.id})" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                                                    <div class="inline-flex">
+                                                        <PencilAltIcon class="h-4 w-4 m-auto mr-0.5" aria-hidden="true" />
+                                                        <span>Edit</span>
+                                                    </div>
+                                                </Link>
+
+                                                <a href="#" class="text-red-600 hover:text-red-900">
+                                                    <div class="inline-flex" @click="trashModal(row.id)">
+                                                        <TrashIcon class="h-4 w-4 m-auto mr-0.5" aria-hidden="true" />
+                                                        <span>Delete</span>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="isLoading" class="absolute h-full w-full top-0 bg-gray-400 bg-opacity-10">
+                                            <td colspan="4" class="px-6 py-4 whitespace-nowrap block h-full">
+                                                <div class="text-sm text-gray-900 text-center h-full">
+                                                    <svg class="animate-spin h-5 w-5 text-purple-700 m-auto h-full" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-else-if="!isLoading && total == 0">
+                                            <td colspan="4" class="px-6 py-4 whitespace-nowrap ">
+                                                <div class="text-sm text-gray-900 text-center">
+                                                    No Data
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- More people... -->
+                                    </tbody>
+                                </table>
+                                <!-- Paging -->
+                                <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                                    <div class="flex-1 flex justify-between sm:hidden">
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Previous
+                                        </a>
+                                        <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Next
+                                        </a>
+                                    </div>
+                                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                        <div class="w-1/12">
+                                            <select v-model="perPage" id="perPage" name="perPage" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <option v-for="i in per" :key="'perpage'+i">{{i}}</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-700">
+                                                Showing
+                                                <span class="font-medium">{{(currentPage*perPage) - perPage + 1}}</span>
+                                                to
+                                                <span class="font-medium">{{(currentPage*perPage)<total?(currentPage*perPage):total}}</span>
+                                                of
+                                                <span class="font-medium">{{total}}</span>
+                                                results
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                                <button type="button" @click="currentPage = currentPage > 1?currentPage -= 1:1;" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Previous</span>
+                                                    <!-- Heroicon name: solid/chevron-left -->
+                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+
+                                                <button v-for="pagging in Math.ceil(total/perPage)" :key="'pagging'+pagging" @click="currentPage=pagging;" type="button" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium" :class="{'z-10 bg-indigo-50 border-indigo-500 text-indigo-600':pagging == currentPage ,'hidden':currentPage + 2 < pagging || currentPage - 2 > pagging }">
+                                                    {{pagging}}
+                                                </button>
+
+                                                <button type="button" @click="currentPage = currentPage < Math.ceil(total/perPage)?currentPage += 1:Math.ceil(total/perPage);" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                                    <span class="sr-only">Next</span>
+                                                    <!-- Heroicon name: solid/chevron-right -->
+                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <TransitionRoot as="template" :show="isModalActive">
+            <Dialog as="div" class="fixed z-10 inset-0 overflow-y-auto" @close="trashCancel()">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+                        <DialogOverlay class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </TransitionChild>
+
+                    <!-- This element is to trick the browser into centering the modal contents. -->
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        <TrashIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
+                                            Delete data
+                                        </DialogTitle>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">
+                                                Are you sure you want to delete your data?
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button @click="trashConfirm()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Delete
+                                </button>
+                                <button @click="trashCancel()" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </TransitionChild>
+                </div>
+            </Dialog>
+        </TransitionRoot>
+    </div>
+</BreezeAuthenticatedLayout>
+</template>
+
+<script>
+import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import {
+    Head
+} from '@inertiajs/inertia-vue3';
+
+import {
+    mapActions,
+    mapState,
+    mapMutations
+} from 'vuex'
+
+import {
+    TrashIcon,
+    SearchIcon,
+    PencilAltIcon,
+    PlusIcon,
+} from '@heroicons/vue/outline'
+import {
+    Dialog,
+    DialogOverlay,
+    DialogTitle,
+    TransitionChild,
+    TransitionRoot,
+} from '@headlessui/vue'
+import { Link } from '@inertiajs/inertia-vue3';
+
+export default {
+    name: "[main_name]Index",
+    components: {
+        BreezeAuthenticatedLayout,
+        Head,
+        TrashIcon,
+        SearchIcon,
+        PencilAltIcon,
+        PlusIcon,
+        Dialog,
+        DialogOverlay,
+        DialogTitle,
+        TransitionChild,
+        TransitionRoot,
+        Link,
+    },
+    data() {
+        return {
+            isModalActive: false,
+            isLoading: false,
+            perPage: 10,
+            currentPage: 1,
+            columns: [
+                [table_field]
+            ],
+            per: [5, 10, 20, 50, 100],
+            search: '',
+            deleteId: '',
+            deleteData: [],
+            checkable: false,
+
+            id: '',
+        }
+    },
+    computed: {
+        ...mapState('[state_name]', {
+            [state_name]s: state => state.[state_name]s,
+            notif: state => state.notif,
+            total: state => state.total,
+        }),
+    },
+    created() {
+        this.isLoading = true
+        this._get[main_name]s()
+    },
+    methods: {
+        ...mapActions('[state_name]', ['get[main_name]s', 'delete[main_name]', 'deletes[main_name]']),
+        ...mapMutations('[state_name]', ['clear[main_name]']),
+        trashModal(id) {
+            this.isModalActive = true
+            this.deleteId = id
+        },
+        trashConfirm() {
+            if (this.deleteId == 'checked') {
+                this.deletes[main_name](this.deleteData.map(a => a.id))
+                    .then(() => {
+                        this.isModalActive = false
+                        this.deleteId = 0
+                        this._get[main_name]s()
+                    })
+            } else {
+                this.delete[main_name](this.deleteId)
+                    .then(() => {
+                        this.isModalActive = false
+                        this.deleteId = 0
+                        this._get[main_name]s()
+                    })
+            }
+        },
+        trashCancel() {
+            this.isModalActive = false
+        },
+        _get[main_name]s() {
+            this.deleteData = []
+            this.isLoading = true
+            this.get[main_name]s({
+                    page: this.currentPage,
+                    perPage: this.perPage,
+                    search: this.search
+                })
+                .then(() => {
+                    this.isLoading = false
+                })
+        },
+    },
+    watch: {
+        notif() {
+            this.$notify({
+                group: "notif",
+                type: this.notif.type,
+                title: this.notif.title,
+                text: this.notif.message
+            },
+            2000
+        );
+        },
+        currentPage() {
+            this._get[main_name]s()
+        },
+        perPage() {
+            this.currentPage = 1;
+            this._get[main_name]s();
+        },
+
+    }
+}
+</script>

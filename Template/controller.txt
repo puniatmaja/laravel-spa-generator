@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\[model_name];
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Validator;
+
+class [class_name] extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+
+        $get = $request->input();
+        $field = 'id';
+        $order_by = 'DESC';
+        $perpage = 15;    
+
+        $data = new [model_name]();
+
+        if (isset($get['search'])) {
+            [table_search]
+        }
+
+        if (isset($get['perpage'])) {           
+            $perpage = $get['perpage'];
+        }
+        
+        if (isset($get['order_by'])) {           
+            $order_by = $get['order_by'];
+        }
+
+        if (isset($get['field'])) {
+            $field = $get['field'];
+        }
+
+        $data = $data->orderBy($field,$order_by)->paginate($perpage);
+
+        return response()->json($data,200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            [table_field]
+        ]);
+
+        if ($validator->fails()) {    
+            return response()->json($validator->messages(), 400);
+        }
+        $[variable_name] = [model_name]::create($request->all());
+        return response()->json(['status' => 'success'],200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\[model_name]  $[variable_name]
+     * @return \Illuminate\Http\Response
+     */
+    public function show([model_name] $[variable_name])
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\[model_name]  $[variable_name]
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        
+        $[variable_name] = [model_name]::find($id);
+        if ($[variable_name]) {        
+            return response()->json($[variable_name],200);
+        }else{
+            return response()->json(['status' => 'error','messages'=> 'Data Not Found!'], 400);        
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\[model_name]  $[variable_name]
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            [table_field]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 400);
+        }
+        $[variable_name] = [model_name]::find($id)->update($request->all());
+        return response()->json(['status' => 'success'],200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\[model_name]  $[variable_name]
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $[variable_name] = [model_name]::find($id)->delete();
+        return response()->json(['status' => 'success'],200);    
+    }
+
+    public function destroys(Request $request)
+    {
+        $post = $request->input();        
+        $[variable_name] = [model_name]::whereIn('id',$post['id'])->delete();
+        return response()->json(['status' => 'success'],200);    
+    }
+}

@@ -1,0 +1,162 @@
+import axios from 'axios'
+
+export default{
+	namespaced: true,
+	state:{
+        [state_name]s: [],
+        [state_name]: {
+            id: '',
+            [table_field]
+        },
+        [state_name]_errors:{
+            [table_field]
+        },
+        total: 0,
+        notif:{
+            message:'',
+            queue: false,
+            type: '',
+        }
+    },
+    mutations: {
+        set[main_name]s(state, payload) {
+            state.[state_name]s = payload.data
+            state.total = payload.total            
+        },
+        set[main_name](state, payload) {             
+            state.[state_name] = {
+                id: payload.id,
+                [table_field_for_edit]
+            }            
+            state.[state_name]_errors = {
+                [table_field]
+            }
+
+        },
+        clear[main_name](state) {        
+            state.[state_name] = {
+                id: '',
+                [table_field]
+            }
+
+            state.[state_name]_errors = {
+                [table_field]           
+            }
+        },
+        set[main_name]Errors(state,payload){        
+            state.[state_name]_errors = {
+                [table_field]               
+            }
+                
+            [field_error]
+        },
+        setNotif(state,payload){
+            state.notif = payload
+        }
+    },
+    actions: {    
+        async get[main_name]s({commit},payload){
+            var page = 1
+            var perPage = 10
+            var search = ""            
+            
+            if (typeof payload != "undefined" && typeof payload.page != "undefined" && payload.page != '') {
+                page = payload.page
+            }
+            if (typeof payload != "undefined" && typeof payload.perPage != "undefined" && payload.perPage != '') {
+                perPage = payload.perPage
+            }
+            if (typeof payload != "undefined" && typeof payload.search != "undefined" && payload.search != '') {
+                search = payload.search
+            }        
+            await axios.get(`/[api_name]?page=${page}&perpage=${perPage}&search=${search||""}`)
+            .then((res) => {
+
+                commit('set[main_name]s', res.data)
+            })
+        },
+        async get[main_name]({commit}, payload){
+            await axios.get(`/[api_name]/${payload}`)
+            .then((res) => {                
+                commit('set[main_name]', res.data)
+            })
+            .catch(e => {
+                
+            })
+        },
+        async add[main_name]({commit}, payload){        
+            await axios.post(`/[api_name]`, payload)
+            .then(res => {
+                commit('setNotif', {
+                    message: `Success Add [info_name]`,
+                    type: 'success',
+                    title: 'Success',
+                })
+                commit('clear[main_name]')
+            }).catch(err => {                
+                if(err.response.status == 422) {
+                    commit('setNotif', {
+                        message: `Checkup Your Data Again!`,
+                        type: 'success',
+                        title: 'Success',
+                    })
+                }else if(err.response.status == 400){
+                    commit('set[main_name]Errors',err.response.data)
+                    commit('setNotif', {
+                        message: `Checkup Your Data Again!`,
+                        type: 'danger',
+                        title: 'Danger',
+                    })
+                }
+            })
+        },
+        async update[main_name]({commit},payload){                
+            
+            await axios.put(`/[api_name]/`+payload.id, payload)
+            .then(res => {
+                commit('setNotif', {
+                    message: `Success Update [info_name]`,
+                    type: 'success',
+                    title: 'Success',
+                })
+                commit('clear[main_name]')
+            })
+            .catch(err => {
+                if(err.response.status == 422) {                
+                    commit('setNotif', {
+                        message: `Checkup Your Data Again!`,
+                        type: 'danger',
+                        title: 'Danger',
+                    })
+                }else if(err.response.status == 400){
+                    commit('set[main_name]Errors',err.response.data)
+                    commit('setNotif', {
+                        message: `Checkup Your Data Again!`,
+                        type: 'danger',
+                        title: 'Danger',
+                    })
+                }
+            })                
+        },
+        async delete[main_name]({commit}, payload) {
+            await axios.delete(`/[api_name]/${payload}`)            
+            .then((res) => {
+                commit('setNotif', {
+                    message: `Success Delete [info_name]`,
+                    type: 'success',
+                    title: 'Success',
+                })
+            })
+        },
+        async deletes[main_name]({commit}, payload) {
+            await axios.post(`/[api_name]/deletes`,{id:payload}) 
+            .then((res) => {
+                commit('setNotif', {
+                    message: `Success Delete [info_name]`,
+                    type: 'success',
+                    title: 'Success',
+                })
+            })
+        }        
+    }
+}
